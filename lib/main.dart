@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photonic_browser/functions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +26,7 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            
+
           ],
         ),
       ),

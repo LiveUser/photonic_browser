@@ -176,14 +176,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      sha256: "1ca20c894b1717686a2319b8548763d812bc0aabdac580420a44c5178c57a867"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.20.3"
   iso_base_media:
     dependency: transitive
     description:
@@ -357,14 +349,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  universal_date_parser:
-    dependency: "direct main"
-    description:
-      name: universal_date_parser
-      sha256: b657b270154e128a246261ff709b3e1cd5c3b05d11362319fc766b67bfb66b2e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.4"
   vector_math:
     dependency: transitive
     description:

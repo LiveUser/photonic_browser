@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:exif_reader/exif_reader.dart';
 import 'package:flutter/foundation.dart';
-import 'package:universal_date_parser/universal_date_parser.dart';
 
 class PhotonicItem{
   PhotonicItem({
@@ -49,7 +48,11 @@ Future<List<PhotonicItem>> fetchItems(Directory photosDirectory)async{
       if(exif.warnings.isEmpty){
         //print(exif.tags.entries.toList());
         IfdTag? dateTag = exif.tags['EXIF DateTimeOriginal'] ?? exif.tags['EXIF DateTimeDigitized'] ?? exif.tags['Image DateTime'];
-        DateTime? dateTime = dateTag?.printable.tryParseDate();
+        String dateAsString = dateTag?.printable ?? "";
+        //Replace colons twice to meet the required standard
+        dateAsString = dateAsString.replaceFirst(":", "-");
+        dateAsString = dateAsString.replaceFirst(":", "-");
+        DateTime? dateTime = DateTime.tryParse(dateAsString);
         double? latitude = _parseLocationAngle(exif.tags["GPS GPSLatitude"]?.values.toList() ?? []);
         double? longitude = _parseLocationAngle(exif.tags["GPS GPSLongitude"]?.values.toList() ?? []);
         if(latitude != null && exif.tags["GPS GPSLatitudeRef"]?.printable == "S"){
