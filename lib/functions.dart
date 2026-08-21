@@ -74,9 +74,12 @@ Future<List<PhotonicItem>> fetchItems(Directory photosDirectory)async{
   return items;
 }
 int getMinInteger(){
-  double maxNumber = double.maxFinite;
-  int minNumber = -maxNumber.round();
+  const int minNumber = -9007199254740991;
   return minNumber;
+}
+int getMaxInteger(){
+  const int maxNumber = 9007199254740991;
+  return maxNumber;
 }
 Future<List<PhotonicItem>> getItemsSortedByDate(Directory photosDirectory)async{
   List<PhotonicItem> items = await fetchItems(photosDirectory);
@@ -98,7 +101,7 @@ class LocationSortSettings{
 Future<List<PhotonicItem>> getNearestItems(LocationSortSettings settings)async{
   List<PhotonicItem> items = await fetchItems(settings.photosDirectory);
   items.sort((a,b){
-    double aDistance = double.infinity;
+    double aDistance = getMaxInteger().toDouble();
     if(a.latitude != null && b.longitude!= null){
       GeoCoordinate point1 = GeoCoordinate(
         latitude: settings.latitude,
@@ -110,7 +113,7 @@ Future<List<PhotonicItem>> getNearestItems(LocationSortSettings settings)async{
       );
       aDistance = PR_Geo.distance(point1, point2);
     }
-    double bDistance = double.infinity;
+    double bDistance = getMaxInteger().toDouble();
     if(b.latitude != null && b.longitude!= null){
       GeoCoordinate point1 = GeoCoordinate(
         latitude: settings.latitude,
@@ -122,7 +125,7 @@ Future<List<PhotonicItem>> getNearestItems(LocationSortSettings settings)async{
       );
       bDistance = PR_Geo.distance(point1, point2);
     }
-    return bDistance.compareTo(aDistance);
+    return aDistance.compareTo(bDistance);
   });
   return items;
 }

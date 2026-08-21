@@ -37,35 +37,12 @@ class ThumbnailViewer extends StatelessWidget {
   });
   final PhotonicItem item;
 
-  Future<Uint8List> genThumbnail()async{
-    try{
-      Uint8List bytes = await item.file.readAsBytes();
-      Pixer pixer = Pixer.fromMemory(bytes);
-      pixer = pixer.resize(100, 100);
-      Uint8List thumbnail = pixer.encode(const PixerPngEncoder());
-      return thumbnail;
-    }catch(error){
-      Uint8List bytes = await item.file.readAsBytes();
-      return bytes;
-    }
-  }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: genThumbnail(), 
-      builder: (context,snapshot){
-        if(snapshot.connectionState == ConnectionState.done){
-          return Image.memory(
-            snapshot.data as Uint8List,
-            width: 150,
-          );
-        }else{
-          return Icon(
-            Icons.image,
-            weight: 150,
-          );
-        }
-      },
+    return Image.file(
+      item.file,
+      width: 150,
+      cacheWidth: 150,
     );
   }
 }

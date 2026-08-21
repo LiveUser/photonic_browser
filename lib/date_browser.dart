@@ -26,7 +26,9 @@ class _DateBrowserState extends State<DateBrowser> {
           GestureDetector(
             onTap: (){
               Navigator.push(context, MaterialPageRoute(
-                builder: (context) => LocationBrowser(),
+                builder: (context) => LocationBrowser(
+                  photosDirectory: widget.photosDirectory,
+                ),
               ));
             },
             child: Icon(
