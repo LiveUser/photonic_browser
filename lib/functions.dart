@@ -72,3 +72,15 @@ Future<List<PhotonicItem>> fetchItems(Directory photosDirectory)async{
   }
   return items;
 }
+int getMinInteger(){
+  double maxNumber = double.maxFinite;
+  int minNumber = -maxNumber.round();
+  return minNumber;
+}
+Future<List<PhotonicItem>> getItemsSortedByDate(Directory photosDirectory)async{
+  List<PhotonicItem> items = await fetchItems(photosDirectory);
+  items.sort((a,b){
+    return (b.dateTime?.millisecondsSinceEpoch ?? getMinInteger()).compareTo(a.dateTime?.microsecondsSinceEpoch ?? getMinInteger());
+  });
+  return items;
+}

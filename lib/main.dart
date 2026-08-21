@@ -1,4 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:photonic_browser/date_browser.dart';
+import 'package:photonic_browser/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,11 +28,29 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar(),
       body: SafeArea(
-        child: Column(
-          children: [
-
-          ],
+        child: Center(
+          child: GestureDetector(
+            onTap: ()async{
+              String? photosDirectory = await FilePicker.getDirectoryPath();
+              if(photosDirectory != null){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => DateBrowser(photosDirectory: photosDirectory),
+                ));
+              }
+            },
+            child: Container(
+              color: Colors.deepPurple,
+              padding: EdgeInsets.all(20),
+              child: Text(
+                "Select folder containing images",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
