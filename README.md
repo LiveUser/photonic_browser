@@ -1,17 +1,12 @@
 # photonic_browser
+Free, open source, next generation local photos browser. \
+Hecho en Puerto Rico por Radamés Jomuel Valentín Reyes
+## Showcase
+[Click to watch showcase on YouTube](https://www.youtube.com/watch?v=xDOknsSrFQc)
+## Features
+Currently supports:
+- Viewing photos in by date in descending order
+- Ordering by nearest to furthest by setting a point on a map
+- Searching through images locally using machine learning (the package used is verry limited (does not support many labels/keywords))
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Note: Machine learning is resource intensive and required processing each image one by one.
