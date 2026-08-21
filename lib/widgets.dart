@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:photonic_browser/full_image_viewer.dart';
 import 'package:pixer/pixer.dart';
 import 'functions.dart';
 
@@ -39,10 +40,19 @@ class ThumbnailViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.file(
-      item.file,
-      width: 150,
-      cacheWidth: 150,
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => FullImageViewer(
+            file: item.file,
+          ),
+        ));
+      },
+      child: Image.file(
+        item.file,
+        width: 150,
+        cacheWidth: 150,
+      ),
     );
   }
 }
