@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pr_geo/pr_geo.dart';
 import 'package:object_detection/object_detection.dart';
 import 'package:lost/lost.dart';
+import 'package:sortero/sortero.dart';
 
 class PhotonicItem{
   PhotonicItem({
@@ -86,9 +87,12 @@ int getMaxInteger(){
 }
 Future<List<PhotonicItem>> getItemsSortedByDate(Directory photosDirectory)async{
   List<PhotonicItem> items = await fetchItems(photosDirectory);
-  items.sort((a,b){
-    return (b.dateTime?.millisecondsSinceEpoch ?? getMinInteger()).compareTo(a.dateTime?.microsecondsSinceEpoch ?? getMinInteger());
-  });
+  items.bubbleSort(
+    compare: (item){
+      return ((item as PhotonicItem).dateTime?.millisecondsSinceEpoch ?? getMinInteger());
+    },
+    reverseOrder: true,
+  );
   return items;
 }
 class LocationSortSettings{

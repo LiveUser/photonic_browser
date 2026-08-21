@@ -661,6 +661,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sortero:
+    dependency: "direct main"
+    description:
+      name: sortero
+      sha256: "4d736c6b1ef9283e54bddb480c4470807d72b4202376ca78f7bc5bda394eaab1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4+4"
   source_span:
     dependency: transitive
     description:
