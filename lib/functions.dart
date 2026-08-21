@@ -6,7 +6,30 @@ import 'package:pr_geo/pr_geo.dart';
 import 'package:object_detection/object_detection.dart';
 import 'package:lost/lost.dart';
 import 'package:sortero/sortero.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
+class MobySynonyms {
+  MobySynonyms(String dictionary){
+    _dictionary = dictionary;
+  }
+  late final String _dictionary;
+  static Future<MobySynonyms> load()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    String dictionary = await rootBundle.loadString('assets/words.txt');
+    return MobySynonyms(dictionary);
+  }
+  List<String>? synonyms(String word){
+    List<String> lines = LineSplitter.split(_dictionary).toList();
+    for(String line in lines){
+      List<String> words = line.split(",");
+      if(word == words.first){
+        return words.sublist(1);
+      }
+    }
+    return null;
+  }
+}
 class PhotonicItem{
   PhotonicItem({
     required this.file,
@@ -164,6 +187,16 @@ Future<List<PhotonicItem>> getMatchingItems(MatchingItemsSettings settings)async
     for(DetectedObject detection in detectedObjects){
       keywords.add(detection.category.categoryName);
     }
+    //Find synonyms and add them to keywords
+    List<String> synonyms = [];
+    MobySynonyms mobySynonyms = await MobySynonyms.load();
+    for(String keyword in keywords){
+      List<String>? keywordSynonyms = mobySynonyms.synonyms(keyword);
+      if(keywordSynonyms != null){
+        synonyms.addAll(keywordSynonyms);
+      }
+    }
+    keywords.addAll(synonyms);
     //print(keywords);
     int rank = keywords.join(" ").instancesOf(settings.searchQuery);
     if(0 < rank){
