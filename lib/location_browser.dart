@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:photonic_browser/widgets.dart';
 import 'package:map/map.dart';
 import 'package:latlng/latlng.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math';
 
 
 class LocationBrowser extends StatefulWidget {
@@ -47,28 +49,68 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  double dragSensitivity = 0.01;
+  double zoom = 0;
+  @override
+  void initState(){
+    super.initState();
+    zoom = widget.mapController.zoom;
+  }
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onScaleUpdate: (scaleUpdate){
-        double newZ = scaleUpdate.focalPointDelta.distance * 0.1;
-        setState(() {
-          widget.mapController.zoom -= newZ;
-        });
-      },
-      child: MapLayout(
-        controller: widget.mapController, 
-        builder: (context,transformer){
-          return TileLayer(
-            builder: (context, x, y, z) {
-              String url = "https://tile.openstreetmap.org/$z/$x/$y.png";
-              return CachedNetworkImage(
-                imageUrl: url,
-              );
+    return Column(
+      spacing: 10,
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onScaleUpdate: (details){
+              // Handles dragging to pan
+              double newLat = widget.mapController.center.latitude.degrees + details.focalPointDelta.dy * dragSensitivity / widget.mapController.zoom;
+              double newLon = widget.mapController.center.longitude.degrees - details.focalPointDelta.dx * dragSensitivity / widget.mapController.zoom;
+              widget.mapController.center = LatLng.degree(newLat, newLon);
+              setState(() {
+          
+              });
             },
-          );
-        },
-      ),
+            child: Stack(
+              children: [
+                MapLayout(
+                  controller: widget.mapController, 
+                  builder: (context,transformer){
+                    return TileLayer(
+                      builder: (context, x, y, z) {            
+                        String url = "https://tile.openstreetmap.org/$z/$x/$y.png";
+                        return CachedNetworkImage(
+                          imageUrl: url,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    );
+                  },
+                ),
+                Center(
+                  child: Icon(
+                    Icons.center_focus_weak,
+                    color: Colors.deepPurple,
+                    size: 50,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Slider(
+          value: zoom, 
+          min: 0,
+          max: 19,
+          onChanged: (newZoom){
+            setState(() {
+              zoom = newZoom;
+              widget.mapController.zoom = newZoom;
+            });
+          },
+        ),
+      ],
     );
   }
 }
