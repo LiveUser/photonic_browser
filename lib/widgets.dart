@@ -4,8 +4,11 @@ import 'package:pixer/pixer.dart';
 import 'functions.dart';
 
 
-AppBar appBar(){
+AppBar appBar({
+  List<Widget>? actions,
+}){
   return AppBar(
+    actions: actions,
     title: Text(
       "Photonic Browser",
       style: TextStyle(

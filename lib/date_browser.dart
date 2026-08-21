@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photonic_browser/functions.dart';
+import 'package:photonic_browser/location_browser.dart';
 import 'package:photonic_browser/widgets.dart';
 import 'dart:io';
 
@@ -20,7 +21,20 @@ class _DateBrowserState extends State<DateBrowser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(
+        actions: [
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => LocationBrowser(),
+              ));
+            },
+            child: Icon(
+              Icons.pin_drop,
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: FutureBuilder(
           future: compute(getItemsSortedByDate, Directory(widget.photosDirectory)), 

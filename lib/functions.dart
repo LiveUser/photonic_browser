@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:exif_reader/exif_reader.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pr_geo/pr_geo.dart';
 
 class PhotonicItem{
   PhotonicItem({
@@ -81,6 +82,47 @@ Future<List<PhotonicItem>> getItemsSortedByDate(Directory photosDirectory)async{
   List<PhotonicItem> items = await fetchItems(photosDirectory);
   items.sort((a,b){
     return (b.dateTime?.millisecondsSinceEpoch ?? getMinInteger()).compareTo(a.dateTime?.microsecondsSinceEpoch ?? getMinInteger());
+  });
+  return items;
+}
+class LocationSortSettings{
+  LocationSortSettings({
+    required this.photosDirectory,
+    required this.latitude,
+    required this.longitude,
+  });
+  final Directory photosDirectory;
+  final double latitude;
+  final double longitude;
+}
+Future<List<PhotonicItem>> getNearestItems(LocationSortSettings settings)async{
+  List<PhotonicItem> items = await fetchItems(settings.photosDirectory);
+  items.sort((a,b){
+    double aDistance = double.infinity;
+    if(a.latitude != null && b.longitude!= null){
+      GeoCoordinate point1 = GeoCoordinate(
+        latitude: settings.latitude,
+        longitude: settings.longitude,
+      );
+      GeoCoordinate point2 = GeoCoordinate(
+        latitude: a.latitude!,
+        longitude: a.longitude!,
+      );
+      aDistance = PR_Geo.distance(point1, point2);
+    }
+    double bDistance = double.infinity;
+    if(b.latitude != null && b.longitude!= null){
+      GeoCoordinate point1 = GeoCoordinate(
+        latitude: settings.latitude,
+        longitude: settings.longitude,
+      );
+      GeoCoordinate point2 = GeoCoordinate(
+        latitude: b.latitude!,
+        longitude: b.longitude!,
+      );
+      bDistance = PR_Geo.distance(point1, point2);
+    }
+    return bDistance.compareTo(aDistance);
   });
   return items;
 }
