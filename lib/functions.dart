@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:exif_reader/exif_reader.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:pr_geo/pr_geo.dart';
+import 'package:object_detection/object_detection.dart';
+import 'package:lost/lost.dart';
 
 class PhotonicItem{
   PhotonicItem({
@@ -127,5 +130,51 @@ Future<List<PhotonicItem>> getNearestItems(LocationSortSettings settings)async{
     }
     return aDistance.compareTo(bDistance);
   });
+  return items;
+}
+class MatchingItemsSettings {
+  MatchingItemsSettings({
+    required this.photosDirectory,
+    required this.searchQuery,
+  });
+  final Directory photosDirectory;
+  final String searchQuery;
+}
+class Match {
+  Match({
+    required this.item,
+    required this.rank,
+  });
+  final PhotonicItem item;
+  final int rank;
+}
+Future<List<PhotonicItem>> getMatchingItems(MatchingItemsSettings settings)async{
+  List<PhotonicItem> items = await getItemsSortedByDate(settings.photosDirectory);
+  List<Match> matches = [];
+  WidgetsFlutterBinding.ensureInitialized();
+  ObjectDetector detector = await ObjectDetector.create();
+  for(PhotonicItem item in items){
+    Uint8List bytes = await item.file.readAsBytes();
+    List<DetectedObject> detectedObjects = await detector.detect(bytes);
+    List<String> keywords = [];
+    for(DetectedObject detection in detectedObjects){
+      keywords.add(detection.category.categoryName);
+    }
+    //print(keywords);
+    int rank = keywords.join(" ").instancesOf(settings.searchQuery);
+    if(0 < rank){
+      matches.add(Match(
+        item: item, 
+        rank: rank,
+      ));
+    }
+  }
+  matches.sort((a,b){
+    return b.rank.compareTo(a.rank);
+  });
+  items = [];
+  for(Match match in matches){
+    items.add(match.item);
+  }
   return items;
 }

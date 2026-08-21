@@ -7,55 +7,29 @@ import 'package:photonic_browser/widgets.dart';
 import 'dart:io';
 
 
-class DateBrowser extends StatefulWidget {
-  const DateBrowser({
+class SearchResultsBrowser extends StatefulWidget {
+  const SearchResultsBrowser({
     super.key,
     required this.photosDirectory,
+    required this.searchQuery,
   });
   final String photosDirectory;
-
+  final String searchQuery;
   @override
-  State<DateBrowser> createState() => _DateBrowserState();
+  State<SearchResultsBrowser> createState() => _SearchResultsBrowserState();
 }
 
-class _DateBrowserState extends State<DateBrowser> {
+class _SearchResultsBrowserState extends State<SearchResultsBrowser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(
-        actions: [
-          GestureDetector(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => LocationBrowser(
-                  photosDirectory: widget.photosDirectory,
-                ),
-              ));
-            },
-            child: Icon(
-              Icons.pin_drop,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          GestureDetector(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => SearchScreen(
-                  photosDirectory: widget.photosDirectory,
-                ),
-              ));
-            },
-            child: Icon(
-              Icons.search,
-            ),
-          ),
-        ],
-      ),
+      appBar: appBar(),
       body: SafeArea(
         child: FutureBuilder(
-          future: compute(getItemsSortedByDate, Directory(widget.photosDirectory)), 
+          future: getMatchingItems(MatchingItemsSettings(
+            photosDirectory: Directory(widget.photosDirectory), 
+            searchQuery: widget.searchQuery,
+          )), 
           builder: (context,snapshot){
             if(snapshot.hasError){
               return Column(

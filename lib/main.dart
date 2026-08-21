@@ -6,6 +6,7 @@ import 'package:photonic_browser/date_browser.dart';
 import 'package:photonic_browser/widgets.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
