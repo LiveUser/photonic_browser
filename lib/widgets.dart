@@ -1,7 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photonic_browser/full_image_viewer.dart';
-import 'package:pixer/pixer.dart';
 import 'functions.dart';
 
 

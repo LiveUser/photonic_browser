@@ -7,6 +7,7 @@ import 'package:latlng/latlng.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
 import 'package:location/location.dart';
+import 'dart:math';
 
 
 class LocationBrowser extends StatefulWidget {
@@ -101,8 +102,12 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  double dragSensitivity = 0.01;
   double zoom = 0;
+  double maxZoom = 19;
+  double panSpeed = 0.1;
+  double minPanSpeed = 0.00001;
+  double maxPanSpeed = 0.1;
+
   @override
   void initState(){
     super.initState();
@@ -116,9 +121,26 @@ class _MapViewState extends State<MapView> {
         Expanded(
           child: GestureDetector(
             onScaleUpdate: (details){
+              //Make panning faster the less zoom in there is
               // Handles dragging to pan
-              double newLat = widget.mapController.center.latitude.degrees + details.focalPointDelta.dy * dragSensitivity / widget.mapController.zoom;
-              double newLon = widget.mapController.center.longitude.degrees - details.focalPointDelta.dx * dragSensitivity / widget.mapController.zoom;
+              double mapScaleFactor = 1.0 / pow(2, widget.mapController.zoom);
+              double angularSpeed = minPanSpeed + (maxPanSpeed - minPanSpeed) * mapScaleFactor;
+              double newLat = widget.mapController.center.latitude.degrees + details.focalPointDelta.dy * angularSpeed;
+              double newLon = widget.mapController.center.longitude.degrees - details.focalPointDelta.dx * angularSpeed;
+              if(newLat < -180){
+                newLat = -180;
+              }else if(180 < newLat){
+                newLat = 180;
+              }else{
+                //Do nothing
+              }
+              if(newLon < -180){
+                newLon = -180;
+              }else if(180 < newLon){
+                newLon = 180;
+              }else{
+                //Do nothing
+              }
               widget.mapController.center = LatLng.degree(newLat, newLon);
               setState(() {
           

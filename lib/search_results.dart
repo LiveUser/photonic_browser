@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photonic_browser/functions.dart';
-import 'package:photonic_browser/location_browser.dart';
-import 'package:photonic_browser/search_screen.dart';
 import 'package:photonic_browser/widgets.dart';
 import 'dart:io';
 
